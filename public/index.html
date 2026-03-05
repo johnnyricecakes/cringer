@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>I Can Haz Cringe</title>
+  <title>Cringer</title><!-- randomized by JS -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
@@ -427,7 +427,7 @@
 <body>
 
 <header>
-  <h1>I Can Haz <span>Cringe</span></h1>
+  <h1 id="siteTitle"></h1>
   <div class="cal-source-label" id="calSourceLabel"></div>
 </header>
 
@@ -500,6 +500,27 @@
 </main>
 
 <script>
+// ─────────────────────────────────────────────
+//  Random title
+// ─────────────────────────────────────────────
+const TITLES = [
+  `I Can Haz <span>Cringe</span>`,
+  `All Your <span>Cringe</span> Are Belong To Us`,
+  `Absolutely Nobody: <span>Cringe</span>`,
+  `Epic <span>Cringe</span>`,
+  `<span>Cringe</span>maxxing`,
+  `That Feeling When <span>Cringe</span>`,
+  `Feels <span>Cringe</span> Man`,
+  `Netflix And <span>Cringe</span>`,
+  `Much <span>Cringe</span> Such Wow`,
+  `New <span>Cringe</span> Unlocked`,
+];
+(function randomizeTitle() {
+  const pick = TITLES[Math.floor(Math.random() * TITLES.length)];
+  document.getElementById('siteTitle').innerHTML = pick;
+  document.title = pick.replace(/<[^>]+>/g, '');
+})();
+
 // ─────────────────────────────────────────────
 //  Cookie helpers
 // ─────────────────────────────────────────────
@@ -907,6 +928,10 @@ function recurringDayFilter() {
 }
 
 function filterEvents(events) {
+  // Always strip past events (recurring events have no specific date, so always keep them)
+  const today = todayISO();
+  events = events.filter(e => e.isRecurring || !e.date || e.date >= today);
+
   const q = searchQuery.toLowerCase();
   // Search ignores venue and date filters — show all matching events across all dates/venues
   if (q) return events.filter(e => e.eventText.toLowerCase().includes(q));
@@ -968,7 +993,6 @@ function render() {
     return `<div class="venue-section">
       <div class="venue-header">
         <div class="venue-name">${nameHtml}</div>
-        ${phone ? `<div class="venue-phone">${esc(phone)}</div>` : ''}
       </div>
       <div class="events-list">${eventsHtml}</div>
     </div>`;
@@ -979,14 +1003,8 @@ function render() {
 //  Default "upcoming week" selection
 // ─────────────────────────────────────────────
 function setDefaultWeek() {
-  const today = todayISO();
-  const endD  = new Date();
-  endD.setDate(endD.getDate() + 6);
-  const weekEnd = isoDate(endD.getFullYear(), endD.getMonth(), endD.getDate());
-
-  dateStart = minDate ? (today >= minDate ? today : minDate) : today;
-  dateEnd   = maxDate ? (weekEnd <= maxDate ? weekEnd : maxDate) : weekEnd;
-  if (dateStart > dateEnd) { dateStart = null; dateEnd = null; }
+  dateStart = null;
+  dateEnd   = null;
   calSelecting = false;
 }
 
