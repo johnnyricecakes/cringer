@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:cringe.com)",
+      "Bash(npm:*)",
+      "mcp__Claude_Preview__preview_start",
+      "Bash(lsof -ti :3000)"
+    ]
+  }
+}
