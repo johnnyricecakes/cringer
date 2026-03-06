@@ -5,7 +5,8 @@
       "Bash(npm:*)",
       "mcp__Claude_Preview__preview_start",
       "Bash(lsof -ti :3000)",
-      "WebFetch(domain:cringer-production.up.railway.app)"
+      "WebFetch(domain:cringer-production.up.railway.app)",
+      "Bash(git pull origin main)"
     ]
   }
 }
