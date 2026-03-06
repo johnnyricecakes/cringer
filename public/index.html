@@ -450,7 +450,17 @@
 
     @media (max-width: 640px) {
       header, .controls, main { padding-left: 1.25rem; padding-right: 1.25rem; }
-      .controls { flex-direction: column; }
+      .controls {
+        display: grid;
+        grid-template-columns: 5fr 5fr 2fr 1fr;
+      }
+      .control-group#searchControlGroup {
+        grid-column: 1 / -1;
+        order: 4;
+      }
+      .search-input {
+        width: 100%;
+      }
       .ms-trigger, .dr-trigger { min-width: unset; width: 100%; }
       .ms-panel, .dr-panel { width: 100%; }
       .event-row { grid-template-columns: 88px 1fr; }
@@ -515,7 +525,7 @@
   </div>
 
   <!-- Artist search -->
-  <div class="control-group">
+  <div class="control-group" id="searchControlGroup">
     <label>Search</label>
     <div class="search-wrapper">
       <input type="text" class="search-input" id="artistSearch" placeholder="Artist or event…" autocomplete="off">
@@ -553,7 +563,7 @@ const TITLES = [
 (function randomizeTitle() {
   const pick = TITLES[Math.floor(Math.random() * TITLES.length)];
   document.getElementById('siteTitle').innerHTML = pick;
-  document.title = pick.replace(/<[^>]+>/g, '');
+  //document.title = pick.replace(/<[^>]+>/g, '');
 })();
 
 // ─────────────────────────────────────────────
