@@ -24,8 +24,10 @@
     header {
       padding: 1.25rem 2rem;
       display: flex;
-      align-items: center;
+      align-items: baseline;
+      justify-content: space-between;
       border-bottom: 1px solid #1a1a1a;
+      flex-wrap: wrap;
     }
 
     header h1 {
@@ -33,6 +35,7 @@
       font-weight: 600;
       color: #bbb;
       letter-spacing: -0.01em;
+      white-space: nowrap;
     }
     header h1 span { color: #e63946; }
     header h1 a { color: inherit; text-decoration: none; }
@@ -41,7 +44,8 @@
     .cal-source-label {
       font-size: 0.72rem;
       color: #484848;
-      margin-left: auto;
+      /*margin-left: auto;*/
+      white-space: nowrap;
     }
     .cal-source-label a { color: inherit; text-decoration: none; }
     .cal-source-label a:hover { color: #555; }
@@ -1265,8 +1269,8 @@ async function loadEvents() {
 
     if (data.fetchedAt) {
       const d = new Date(data.fetchedAt);
-      const label = d.toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' });
-      document.getElementById('calSourceLabel').innerHTML = `fetched from <a href="https://cringe.com" target="_blank" rel="noopener">cringe.com</a> on ${label}`;
+      const label = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+      document.getElementById('calSourceLabel').innerHTML = `fetched from <a href="https://cringe.com" target="_blank" rel="noopener">cringe.com</a> ${label}`;
     }
 
     if (apiDateRange && apiDateRange.year != null) {
