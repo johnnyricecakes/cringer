@@ -464,6 +464,46 @@
     }
     .btn-light-toggle:hover { border-color: #3a3a3a; color: #aaa; }
 
+    /* ── Hide button ── */
+    .hide-btn {
+      background: none;
+      border: none;
+      color: #333;
+      cursor: pointer;
+      font-size: 0.68rem;
+      padding: 0;
+      line-height: 1;
+      opacity: 0;
+      transition: opacity 0.1s, color 0.1s;
+      flex-shrink: 0;
+      margin-left: auto;
+      font-family: inherit;
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .venue-section:hover .hide-btn { opacity: 1; }
+    .hide-btn:hover { color: #aaa; }
+    .hide-btn.hidden-active { opacity: 1; color: #333; }
+    .venue-section.hidden-venue .venue-name { color: #2a2a2a; }
+    .venue-section.hidden-venue .events-list { display: none; }
+
+    /* ── Pin button ── */
+    .pin-btn {
+      background: none;
+      border: none;
+      color: #484848;
+      cursor: pointer;
+      font-size: 0.78rem;
+      padding: 0;
+      line-height: 1;
+      opacity: 0;
+      transition: opacity 0.1s, color 0.1s;
+      flex-shrink: 0;
+    }
+    .venue-section:hover .pin-btn { opacity: 1; }
+    .pin-btn.pinned { color: #e63946; opacity: 1; }
+    .pin-btn:hover { color: #e63946; }
+
     @media (max-width: 640px) {
       header, .controls, main { padding-left: 1.25rem; padding-right: 1.25rem; }
       .controls {
@@ -614,6 +654,8 @@ let allVenues = [];
 let apiDateRange = null;
 
 let selectedVenues = new Set(); // empty = all
+let pinnedVenues   = new Set();
+let hiddenVenues   = new Set();
 let searchQuery = '';
 let dateStart = null;  // 'YYYY-MM-DD' or null
 let dateEnd   = null;
@@ -623,6 +665,22 @@ let calYear   = null;
 let calMonth  = null;
 let minDate   = null;
 let maxDate   = null;
+
+function savePinnedVenues() {
+  localStorage.setItem('cringe_pinned', JSON.stringify([...pinnedVenues]));
+}
+function loadPinnedVenues() {
+  try { return JSON.parse(localStorage.getItem('cringe_pinned') || '[]'); }
+  catch { return []; }
+}
+
+function saveHiddenVenues() {
+  localStorage.setItem('cringe_hidden', JSON.stringify([...hiddenVenues]));
+}
+function loadHiddenVenues() {
+  try { return JSON.parse(localStorage.getItem('cringe_hidden') || '[]'); }
+  catch { return []; }
+}
 
 // ─────────────────────────────────────────────
 //  Utility
@@ -752,7 +810,6 @@ function buildVenueList(venues) {
       else selectedVenues.delete(v);
       item.classList.toggle('checked', cb.checked);
       updateMsTrigger();
-      saveVenueCookie();
       render();
     });
     item.appendChild(cb);
@@ -800,7 +857,6 @@ document.getElementById('msSelectAll').addEventListener('click', () => {
     cb.closest('.ms-item').classList.add('checked');
   });
   updateMsTrigger();
-  saveVenueCookie();
   render();
 });
 
@@ -811,7 +867,6 @@ document.getElementById('msClearAll').addEventListener('click', () => {
   });
   selectedVenues.clear();
   updateMsTrigger();
-  saveVenueCookie();
   render();
 });
 
@@ -1009,11 +1064,38 @@ const dateControlGroup  = document.getElementById('dateControlGroup');
 const mainEl            = document.getElementById('main');
 const resultsBar        = document.getElementById('resultsBar');
 
+mainEl.addEventListener('click', e => {
+  const pinBtn = e.target.closest('.pin-btn');
+  if (pinBtn) {
+    const venue = pinBtn.dataset.venue;
+    if (pinnedVenues.has(venue)) {
+      pinnedVenues.delete(venue);
+      pinBtn.classList.remove('pinned');
+      pinBtn.title = 'Pin to top';
+    } else {
+      pinnedVenues.add(venue);
+      pinBtn.classList.add('pinned');
+      pinBtn.title = 'Unpin';
+    }
+    savePinnedVenues();
+    return;
+  }
+
+  const hideBtn = e.target.closest('.hide-btn');
+  if (hideBtn) {
+    const venue = hideBtn.dataset.venue;
+    if (hiddenVenues.has(venue)) {
+      hiddenVenues.delete(venue);
+    } else {
+      hiddenVenues.add(venue);
+    }
+    saveHiddenVenues();
+    render();
+  }
+});
+
 function updateSearchState() {
-  const active = searchQuery.length > 0;
-  searchClear.classList.toggle('visible', active);
-  venueControlGroup.classList.toggle('dimmed', active);
-  dateControlGroup.classList.toggle('dimmed', active);
+  searchClear.classList.toggle('visible', searchQuery.length > 0);
 }
 
 artistSearch.addEventListener('input', () => {
@@ -1036,7 +1118,6 @@ resetBtn.addEventListener('click', () => {
     cb.closest('.ms-item').classList.remove('checked');
   });
   updateMsTrigger();
-  saveVenueCookie();
 
   searchQuery = '';
   artistSearch.value = '';
@@ -1077,18 +1158,17 @@ function filterEvents(events) {
   events = events.filter(e => e.isRecurring || !e.date || e.date >= today);
 
   const q = searchQuery.toLowerCase();
-  // Search ignores venue and date filters — show all matching events across all dates/venues
-  if (q) return events.filter(e => e.eventText.toLowerCase().includes(q));
-
   const dayFilter = recurringDayFilter();
+
   return events.filter(e => {
     if (selectedVenues.size > 0 && !selectedVenues.has(e.venue)) return false;
     if (e.isRecurring) {
-      // Only show recurring events whose day of week falls within the date range
-      return dayFilter === null || dayFilter.has(e.dayOfWeek);
+      if (dayFilter !== null && !dayFilter.has(e.dayOfWeek)) return false;
+    } else {
+      if (dateStart && e.date < dateStart) return false;
+      if (dateEnd   && e.date > dateEnd)   return false;
     }
-    if (dateStart && e.date < dateStart) return false;
-    if (dateEnd   && e.date > dateEnd)   return false;
+    if (q && !e.eventText.toLowerCase().includes(q) && !e.venue.toLowerCase().includes(q)) return false;
     return true;
   });
 }
@@ -1102,7 +1182,15 @@ function render() {
     byVenue[e.venue].events.push(e);
   });
 
-  const venueNames = Object.keys(byVenue).sort((a, b) => a.localeCompare(b));
+  const venueNames = Object.keys(byVenue).sort((a, b) => {
+    const ah = hiddenVenues.has(a), bh = hiddenVenues.has(b);
+    if (ah && !bh) return 1;
+    if (!ah && bh) return -1;
+    const ap = pinnedVenues.has(a), bp = pinnedVenues.has(b);
+    if (ap && !bp) return -1;
+    if (!ap && bp) return 1;
+    return a.localeCompare(b);
+  });
   const total = filtered.length;
 
   resultsBar.innerHTML = `<strong>${total}</strong> event${total !== 1 ? 's' : ''} at <strong>${venueNames.length}</strong> venue${venueNames.length !== 1 ? 's' : ''}`;
@@ -1139,11 +1227,15 @@ function render() {
       </div>`;
     }).join('');
 
-    return `<div class="venue-section">
+    const pinned = pinnedVenues.has(vName);
+    const hidden = hiddenVenues.has(vName);
+    return `<div class="venue-section${hidden ? ' hidden-venue' : ''}">
       <div class="venue-header">
         <div class="venue-name">${nameHtml}</div>
+        <button class="hide-btn${hidden ? ' hidden-active' : ''}" data-venue="${esc(vName)}" title="${hidden ? 'Show venue' : 'Hide venue'}">${hidden ? 'show' : 'hide'}</button>
+        <button class="pin-btn${pinned ? ' pinned' : ''}" data-venue="${esc(vName)}" title="${pinned ? 'Unpin' : 'Pin to top'}">★</button>
       </div>
-      <div class="events-list">${eventsHtml}</div>
+      <div class="events-list">${hidden ? '' : eventsHtml}</div>
     </div>`;
   }).join('');
 }
@@ -1189,15 +1281,8 @@ async function loadEvents() {
 
     buildVenueList(allVenues);
 
-    const saved = loadVenueCookie().filter(v => allVenues.includes(v));
-    if (saved.length > 0) {
-      saved.forEach(v => {
-        selectedVenues.add(v);
-        const item = msList.querySelector(`.ms-item[data-venue="${CSS.escape(v)}"]`);
-        if (item) { item.querySelector('input').checked = true; item.classList.add('checked'); }
-      });
-      updateMsTrigger();
-    }
+    loadPinnedVenues().filter(v => allVenues.includes(v)).forEach(v => pinnedVenues.add(v));
+    loadHiddenVenues().filter(v => allVenues.includes(v)).forEach(v => hiddenVenues.add(v));
 
     setDefaultWeek();
     updateDrTrigger();
@@ -1209,7 +1294,10 @@ async function loadEvents() {
 
 document.getElementById('lightToggle').addEventListener('click', () => {
   document.body.classList.toggle('light-mode');
+  localStorage.setItem('cringe_light_mode', document.body.classList.contains('light-mode') ? '1' : '0');
 });
+
+if (localStorage.getItem('cringe_light_mode') === '1') document.body.classList.add('light-mode');
 
 loadEvents();
 </script>
