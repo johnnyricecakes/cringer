@@ -404,6 +404,16 @@
       opacity: 0.75;
     }
 
+    .cal-link {
+      color: #333;
+      text-decoration: none;
+      font-size: 0.65rem;
+      letter-spacing: 0.03em;
+      white-space: nowrap;
+      transition: color 0.1s;
+    }
+    .cal-link:hover { color: #e63946; }
+
     .empty-state { text-align: center; padding: 4rem 2rem; color: #484848; font-size: 0.82rem; }
     .loading     { text-align: center; padding: 4rem 2rem; color: #484848; font-size: 0.82rem; }
     .error-msg {
@@ -617,6 +627,84 @@ function formatEventDate(e) {
   if (!e.date) return e.dayOfWeek;
   const [y,m,d] = e.date.split('-').map(Number);
   return new Date(y,m-1,d).toLocaleDateString('en-US', { weekday:'short', month:'short', day:'numeric' });
+}
+
+// ─────────────────────────────────────────────
+//  Google Calendar URL builder
+// ─────────────────────────────────────────────
+function parseTimeToHHMM(str) {
+  const m = str.trim().match(/^(\d{1,2})(?::(\d{2}))?(am|pm)$/i);
+  if (!m) return null;
+  let h = parseInt(m[1]);
+  const min = m[2] ? parseInt(m[2]) : 0;
+  if (/pm/i.test(m[3]) && h !== 12) h += 12;
+  if (/am/i.test(m[3]) && h === 12) h = 0;
+  return String(h).padStart(2,'0') + String(min).padStart(2,'0');
+}
+
+function nextDayISO(iso) {
+  const [y,m,d] = iso.split('-').map(Number);
+  const next = new Date(y, m-1, d+1);
+  return isoDate(next.getFullYear(), next.getMonth(), next.getDate());
+}
+
+function buildGoogleCalendarUrl(e, venueName) {
+  if (e.isRecurring || !e.date) return null;
+
+  const dateStr = e.date.replace(/-/g, '');
+  let startStr, endStr;
+
+  if (e.time) {
+    const rangeMatch = e.time.match(/^(\d{1,2}(?::\d{2})?(?:am|pm)?)\s*-\s*(\d{1,2}(?::\d{2})?(?:am|pm)?)$/i);
+    let startHHMM = null, endHHMM = null;
+
+    if (rangeMatch) {
+      let s = rangeMatch[1], en = rangeMatch[2];
+      // If start has no am/pm but end does, inherit it (e.g. "6-9pm")
+      if (!/am|pm/i.test(s) && /am|pm/i.test(en)) {
+        s += en.match(/(am|pm)$/i)[1];
+      }
+      startHHMM = parseTimeToHHMM(s);
+      endHHMM   = parseTimeToHHMM(en);
+    } else {
+      startHHMM = parseTimeToHHMM(e.time);
+    }
+
+    if (startHHMM) {
+      let endDate = dateStr;
+      if (!endHHMM) {
+        let h = parseInt(startHHMM.slice(0,2)) + 2;
+        if (h >= 24) { h -= 24; endDate = nextDayISO(e.date).replace(/-/g,''); }
+        endHHMM = String(h).padStart(2,'0') + startHHMM.slice(2);
+      } else if (endHHMM < startHHMM) {
+        // Event crosses midnight
+        endDate = nextDayISO(e.date).replace(/-/g,'');
+      }
+      startStr = `${dateStr}T${startHHMM}00`;
+      endStr   = `${endDate}T${endHHMM}00`;
+    } else {
+      startStr = dateStr;
+      endStr   = nextDayISO(e.date).replace(/-/g,'');
+    }
+  } else {
+    // All-day
+    startStr = dateStr;
+    endStr   = nextDayISO(e.date).replace(/-/g,'');
+  }
+
+  const details = [];
+  if (e.price) details.push(`Price: ${e.price}`);
+  if (e.venueUrl) details.push(e.venueUrl);
+
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: e.eventText,
+    dates: `${startStr}/${endStr}`,
+    location: venueName,
+  });
+  if (details.length) params.set('details', details.join('\n'));
+
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
 }
 
 // ─────────────────────────────────────────────
@@ -1018,10 +1106,15 @@ function render() {
     const eventsHtml = events.map(e => {
       const dl = formatEventDate(e);
       const meta = [e.time, e.price].filter(Boolean).join(' · ');
+      const calUrl = buildGoogleCalendarUrl(e, vName);
+      const calLink = calUrl
+        ? `<a href="${esc(calUrl)}" target="_blank" rel="noopener" class="cal-link" title="Add to Google Calendar">+&nbsp;cal</a>`
+        : '';
+      const metaHtml = esc(meta) + (calLink ? (meta ? ' · ' : '') + calLink : '');
       return `<div class="event-row${e.isRecurring ? ' recurring' : ''}">
         <div class="event-date ${e.isRecurring ? 'recurring-label' : ''}">${esc(dl)}</div>
         <div class="event-name">${esc(e.eventText)}${e.soldOut ? ' <span class="badge-soldout">SOLD OUT</span>' : ''}</div>
-        <div class="event-meta">${esc(meta)}</div>
+        <div class="event-meta">${metaHtml}</div>
       </div>`;
     }).join('');
 
