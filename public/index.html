@@ -13,7 +13,7 @@
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
       background: #0c0c0c;
-      color: #e2e2e2;
+      color: #ddd;
       min-height: 100vh;
       font-size: 14px;
       line-height: 1.5;
@@ -33,7 +33,7 @@
     header h1 {
       font-size: 0.88rem;
       font-weight: 600;
-      color: #bbb;
+      color: #ddd;
       letter-spacing: -0.01em;
       white-space: nowrap;
     }
@@ -43,7 +43,7 @@
 
     .cal-source-label {
       font-size: 0.72rem;
-      color: #484848;
+      color: #777;
       /*margin-left: auto;*/
       white-space: nowrap;
     }
@@ -54,7 +54,7 @@
     .search-wrapper { position: relative; display: flex; align-items: center; }
     .search-input {
       background: transparent;
-      color: #aaa;
+      color: #ddd;
       border: 1px solid #1e1e1e;
       border-radius: 5px;
       padding: 0.38rem 1.6rem 0.38rem 0.65rem;
@@ -64,14 +64,14 @@
       width: 200px;
       transition: border-color 0.1s, color 0.1s;
     }
-    .search-input::placeholder { color: #484848; }
-    .search-input:focus { border-color: #3a3a3a; color: #e2e2e2; }
+    .search-input::placeholder { color: #777; }
+    .search-input:focus { border-color: #3a3a3a; color: #ddd; }
     .search-clear {
       position: absolute;
       right: 0.45rem;
       background: none;
       border: none;
-      color: #484848;
+      color: #777;
       font-size: 0.85rem;
       line-height: 1;
       cursor: pointer;
@@ -79,7 +79,7 @@
       display: none;
       transition: color 0.1s;
     }
-    .search-clear:hover { color: #aaa; }
+    .search-clear:hover { color: #ddd; }
     .search-clear.visible { display: block; }
 
     /* Dim filters when search is active */
@@ -109,14 +109,14 @@
       font-size: 0.62rem;
       text-transform: uppercase;
       letter-spacing: 0.1em;
-      color: #484848;
+      color: #777;
       font-weight: 500;
     }
 
     /* Trigger buttons */
     .trigger-btn {
       background: transparent;
-      color: #aaa;
+      color: #ddd;
       border: 1px solid #1e1e1e;
       border-radius: 5px;
       padding: 0.38rem 0.65rem;
@@ -131,7 +131,7 @@
       transition: border-color 0.1s, color 0.1s;
       outline: none;
     }
-    .trigger-btn:hover, .trigger-btn.open { border-color: #3a3a3a; color: #e2e2e2; }
+    .trigger-btn:hover, .trigger-btn.open { border-color: #3a3a3a; color: #ddd; }
     .trigger-arrow { font-size: 0.5rem; opacity: 0.35; transition: transform 0.15s; }
     .trigger-btn.open .trigger-arrow { transform: rotate(180deg); }
 
@@ -167,7 +167,7 @@
 
     .ms-search {
       background: transparent;
-      color: #e2e2e2;
+      color: #ddd;
       border: none;
       border-bottom: 1px solid #1a1a1a;
       padding: 0.5rem 0.75rem;
@@ -175,7 +175,7 @@
       font-family: inherit;
       outline: none;
     }
-    .ms-search::placeholder { color: #484848; }
+    .ms-search::placeholder { color: #777; }
 
     .ms-actions {
       display: flex;
@@ -186,7 +186,7 @@
     .ms-act {
       background: transparent;
       border: 1px solid #1e1e1e;
-      color: #484848;
+      color: #777;
       border-radius: 3px;
       padding: 2px 8px;
       font-size: 0.68rem;
@@ -194,7 +194,7 @@
       cursor: pointer;
       transition: color 0.1s, border-color 0.1s;
     }
-    .ms-act:hover { color: #bbb; border-color: #3a3a3a; }
+    .ms-act:hover { color: #ddd; border-color: #3a3a3a; }
 
     .ms-list {
       max-height: 240px;
@@ -216,7 +216,7 @@
       color: #666;
       transition: background 0.06s, color 0.06s;
     }
-    .ms-item:hover { background: #161616; color: #e2e2e2; }
+    .ms-item:hover { background: #161616; color: #ddd; }
     .ms-item.checked { color: #c8c8c8; }
     .ms-item input[type="checkbox"] { accent-color: #e63946; cursor: pointer; flex-shrink: 0; }
     .ms-item.ms-hidden { display: none; }
@@ -263,7 +263,7 @@
     }
     .cal-nav-btn:hover:not(:disabled) { border-color: #3a3a3a; color: #ccc; }
     .cal-nav-btn:disabled { opacity: 0.2; cursor: default; }
-    .cal-month-label { font-size: 0.8rem; font-weight: 500; color: #bbb; }
+    .cal-month-label { font-size: 0.8rem; font-weight: 500; color: #ddd; }
 
     .cal-weekdays {
       display: grid;
@@ -273,7 +273,7 @@
     .cal-wd {
       text-align: center;
       font-size: 0.6rem;
-      color: #484848;
+      color: #777;
       font-weight: 600;
       padding-bottom: 4px;
       letter-spacing: 0.06em;
@@ -297,11 +297,11 @@
       transition: background 0.06s, color 0.06s;
     }
     .cal-day.empty { cursor: default; }
-    .cal-day.disabled { color: #484848; cursor: default; pointer-events: none; }
+    .cal-day.disabled { color: #777; cursor: default; pointer-events: none; }
     .cal-day.today { color: #e63946; font-weight: 600; }
     .cal-day:hover:not(.disabled):not(.empty) { background: #1a1a1a; color: #fff; }
 
-    .cal-day.in-range { background: rgba(230,57,70,0.1); border-radius: 0; color: #bbb; }
+    .cal-day.in-range { background: rgba(230,57,70,0.1); border-radius: 0; color: #ddd; }
     .cal-day.range-start,
     .cal-day.range-end { background: #e63946; color: #fff; font-weight: 600; }
     .cal-day.range-start { border-radius: 4px 0 0 4px; }
@@ -319,11 +319,11 @@
       padding-top: 0.5rem;
       border-top: 1px solid #1a1a1a;
     }
-    .dr-hint { font-size: 0.68rem; color: #484848; font-style: italic; }
+    .dr-hint { font-size: 0.68rem; color: #777; font-style: italic; }
     .dr-clear {
       background: transparent;
       border: none;
-      color: #484848;
+      color: #777;
       font-size: 0.7rem;
       font-family: inherit;
       cursor: pointer;
@@ -335,7 +335,7 @@
     .btn-reset {
       background: transparent;
       border: 1px solid #1a1a1a;
-      color: #484848;
+      color: #777;
       border-radius: 5px;
       padding: 0.38rem 0.75rem;
       font-size: 0.78rem;
@@ -344,16 +344,16 @@
       align-self: flex-end;
       transition: border-color 0.1s, color 0.1s;
     }
-    .btn-reset:hover { border-color: #3a3a3a; color: #aaa; }
+    .btn-reset:hover { border-color: #3a3a3a; color: #ddd; }
 
     /* ── Results bar ── */
     .results-bar {
       padding: 0.45rem 2rem;
       font-size: 0.7rem;
-      color: #484848;
+      color: #777;
       border-bottom: 1px solid #141414;
     }
-    .results-bar strong { color: #484848; }
+    .results-bar strong { color: #777; }
 
     /* ── Event list ── */
     main { padding: 2rem; max-width: 880px; }
@@ -366,10 +366,10 @@
       gap: 0.75rem;
       margin-bottom: 0.4rem;
     }
-    .venue-name { font-size: 0.82rem; font-weight: 600; color: #bbb; }
+    .venue-name { font-size: 0.82rem; font-weight: 600; color: #ddd; }
     .venue-name a { color: inherit; text-decoration: none; }
     .venue-name a:hover { color: #e63946; }
-    .venue-phone { font-size: 0.68rem; color: #484848; }
+    .venue-phone { font-size: 0.68rem; color: #777; }
 
     .events-list { border-top: 1px solid #1a1a1a; }
 
@@ -388,16 +388,16 @@
     .event-date {
       font-size: 0.7rem;
       font-weight: 500;
-      color: #484848;
+      color: #777;
       white-space: nowrap;
       font-variant-numeric: tabular-nums;
     }
-    .event-date.recurring-label { color: #484848; font-style: italic; font-weight: 400; }
-    .event-row.recurring .event-name { color: #484848; }
+    .event-date.recurring-label { color: #777; font-style: italic; font-weight: 400; }
+    .event-row.recurring .event-name { color: #777; }
 
-    .event-name { font-size: 0.82rem; color: #b8b8b8; line-height: 1.4; }
+    .event-name { font-size: 0.82rem; color: #ddd; line-height: 1.4; }
 
-    .event-meta { font-size: 0.7rem; color: #484848; white-space: nowrap; text-align: right; }
+    .event-meta { font-size: 0.7rem; color: #777; white-space: nowrap; text-align: right; }
 
     .badge-soldout {
       display: inline-block;
@@ -425,8 +425,8 @@
     }
     .cal-link:hover { color: #e63946; }
 
-    .empty-state { text-align: center; padding: 4rem 2rem; color: #484848; font-size: 0.82rem; }
-    .loading     { text-align: center; padding: 4rem 2rem; color: #484848; font-size: 0.82rem; }
+    .empty-state { text-align: center; padding: 4rem 2rem; color: #777; font-size: 0.82rem; }
+    .loading     { text-align: center; padding: 4rem 2rem; color: #777; font-size: 0.82rem; }
     .error-msg {
       background: #0e0505;
       border: 1px solid #250f0f;
@@ -459,7 +459,7 @@
     .btn-light-toggle {
       background: transparent;
       border: 1px solid #1a1a1a;
-      color: #484848;
+      color: #777;
       border-radius: 5px;
       padding: 0.38rem 0.75rem;
       font-size: 0.78rem;
@@ -468,7 +468,7 @@
       align-self: flex-end;
       transition: border-color 0.1s, color 0.1s;
     }
-    .btn-light-toggle:hover { border-color: #3a3a3a; color: #aaa; }
+    .btn-light-toggle:hover { border-color: #3a3a3a; color: #ddd; }
 
     /* ── Hide button ── */
     .hide-btn {
@@ -488,7 +488,7 @@
       text-underline-offset: 2px;
     }
     .venue-section:hover .hide-btn { opacity: 1; }
-    .hide-btn:hover { color: #aaa; }
+    .hide-btn:hover { color: #ddd; }
     .hide-btn.hidden-active { opacity: 1; color: #333; }
     .venue-section.hidden-venue .venue-name { color: #2a2a2a; }
     .venue-section.hidden-venue .events-list { display: none; }
@@ -497,7 +497,7 @@
     .pin-btn {
       background: none;
       border: none;
-      color: #484848;
+      color: #777;
       cursor: pointer;
       font-size: 0.78rem;
       padding: 0;
