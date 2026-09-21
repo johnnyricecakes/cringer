@@ -539,7 +539,7 @@
 <body>
 
 <header>
-  <h1 id="siteTitle"></h1>
+  <h1 id="siteTitle"><a href="https://cringe.com" target="_blank" rel="noopener"><span>Cringer</span></a></h1>
   <div class="cal-source-label" id="calSourceLabel"></div>
 </header>
 
@@ -613,26 +613,6 @@
 </main>
 
 <script>
-// ─────────────────────────────────────────────
-//  Random title
-// ─────────────────────────────────────────────
-const TITLES = [
-  `I Can Haz <a href="https://cringe.com" target="_blank" rel="noopener"><span>Cringe</span></a>`,
-  `All Your <a href="https://cringe.com" target="_blank" rel="noopener"><span>Cringe</span></a> Are Belong To Us`,
-  `Epic <a href="https://cringe.com" target="_blank" rel="noopener"><span>Cringe</span></a>`,
-  `<a href="https://cringe.com" target="_blank" rel="noopener"><span>Cringe</span></a>maxxing`,
-  `That Feeling When <a href="https://cringe.com" target="_blank" rel="noopener"><span>Cringe</span></a>`,
-  `Feels <a href="https://cringe.com" target="_blank" rel="noopener"><span>Cringe</span></a> Man`,
-  `Netflix And <a href="https://cringe.com" target="_blank" rel="noopener"><span>Cringe</span></a>`,
-  `Much <a href="https://cringe.com" target="_blank" rel="noopener"><span>Cringe</span></a> Such Wow`,
-  `New <a href="https://cringe.com" target="_blank" rel="noopener"><span>Cringe</span></a> Unlocked`,
-];
-(function randomizeTitle() {
-  const pick = TITLES[Math.floor(Math.random() * TITLES.length)];
-  document.getElementById('siteTitle').innerHTML = pick;
-  //document.title = pick.replace(/<[^>]+>/g, '');
-})();
-
 // ─────────────────────────────────────────────
 //  Cookie helpers
 // ─────────────────────────────────────────────
@@ -1260,7 +1240,7 @@ function setDefaultWeek() {
 // ─────────────────────────────────────────────
 async function loadEvents() {
   try {
-    const res = await fetch('/api/events');
+    const res = await fetch('data.json');
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     allEvents    = data.events;
@@ -1294,7 +1274,7 @@ async function loadEvents() {
     updateDrTrigger();
     render();
   } catch (e) {
-    mainEl.innerHTML = `<div class="error-msg">Could not load events. Is the server running?<br><small>${e.message}</small></div>`;
+    mainEl.innerHTML = `<div class="error-msg">Could not load events.<br><small>${e.message}</small></div>`;
   }
 }
 
